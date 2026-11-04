@@ -1,0 +1,74 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Admin = akun yang punya dokumen admins/{uid} (dibuat MANUAL di Firebase Console, tidak bisa lewat website)
+    function isAdmin() {
+      return request.auth != null &&
+             exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+    }
+
+    function validProduct(d) {
+      return d.name is string && d.name.size() > 0 && d.name.size() <= 80
+          && d.category in ['Hijab', 'Wanita', 'Pria', 'Aksesori']
+          && d.price is number && d.price >= 0
+          && d.stock is int && d.stock >= 0
+          && d.status in ['aktif', 'nonaktif']
+          && d.colors is list && d.colors.size() > 0
+          && d.sizes is list && d.sizes.size() > 0
+          && d.description is string && d.description.size() <= 500
+          && (!('imageUrl' in d) || (d.imageUrl is string && d.imageUrl.size() <= 980000));
+    }
+
+    // Produk: semua orang boleh MEMBACA produk aktif; hanya admin yang boleh menulis/menghapus
+    match /products/{productId} {
+      allow read: if resource.data.status == 'aktif' || isAdmin();
+      allow create, update: if isAdmin() && validProduct(request.resource.data);
+      allow delete: if isAdmin();
+    }
+
+    // Peran admin: pengguna hanya boleh membaca dokumennya sendiri; tidak ada yang boleh menulis dari klien
+    match /admins/{uid} {
+      allow read: if request.auth != null && request.auth.uid == uid;
+      allow write: if false;
+    }
+
+    // Purchase verification is created manually by an admin after confirming payment.
+    match /verifiedPurchases/{email}/products/{productId} {
+      allow read: if isAdmin() || (request.auth != null
+                                   && request.auth.token.email is string
+                                   && request.auth.token.email.lower() == email);
+      allow create, update, delete: if isAdmin();
+    }
+
+    function hasVerifiedPurchase(productId) {
+      return request.auth != null
+          && request.auth.token.email is string
+          && exists(/databases/$(database)/documents/verifiedPurchases/$(request.auth.token.email.lower())/products/$(productId));
+    }
+
+    function validReview(d) {
+      return d.keys().hasOnly(['uid', 'rating', 'comment', 'created', 'updated'])
+          && d.uid == request.auth.uid
+          && d.rating is int && d.rating >= 1 && d.rating <= 5
+          && d.comment is string && d.comment.size() > 0 && d.comment.size() <= 1000
+          && d.created is int && d.updated is int;
+    }
+
+    // Reviews are public to read; only a confirmed buyer can create or edit their own review.
+    match /reviews/{productId}/entries/{uid} {
+      allow read: if true;
+      allow create: if request.auth != null
+                    && request.auth.uid == uid
+                    && hasVerifiedPurchase(productId)
+                    && validReview(request.resource.data);
+      allow update: if request.auth != null
+                    && request.auth.uid == uid
+                    && hasVerifiedPurchase(productId)
+                    && validReview(request.resource.data)
+                    && request.resource.data.created == resource.data.created
+                    && request.resource.data.updated >= resource.data.updated;
+      allow delete: if isAdmin();
+    }
+  }
+}

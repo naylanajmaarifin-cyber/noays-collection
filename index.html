@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Noay’s Collection — Good Clothes, Good Mood</title>
+<meta name="theme-color" content="#F1D302">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,500..900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+<div id="site-header"></div>
+
+<main>
+<section class="hero gingham">
+  <div class="hero-inner">
+    <div class="hero-card">
+      <p class="eyebrow">Sunshine looks good on you ✷</p>
+      <div id="heroWordmark"></div>
+      <h1>Style for your <em>bright days.</em></h1>
+      <p>Outfit santai, warna ceria, dan pilihan nyaman untuk menemani setiap harimu. Temukan gaya yang paling kamu banget di Noay’s Collection.</p>
+      <div class="hero-actions">
+        <a class="btn blue" href="category.html?type=Semua">Belanja sekarang <span id="ico1"></span></a>
+        <a class="btn yellow" href="category.html?type=Promo">Lihat promo ☀</a>
+      </div>
+      <div class="hero-note"><span class="round-bunny" id="heroRound"></span><span><b>Mix, match, repeat!</b><small>Gaya kamu, aturan kamu.</small></span></div>
+    </div>
+    <div class="hero-art" aria-hidden="true" id="heroArt"></div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="section-title"><div><p class="eyebrow">Pilih mood-mu</p><h2>Jelajahi kategori <span id="shp1"></span></h2></div><p>Setiap tombol membuka halaman kategori tersendiri.</p></div>
+  <div class="category-grid" id="catGrid"></div>
+</section>
+
+<section class="section products-section">
+  <div class="section-title"><div><p class="eyebrow">Good finds ahead</p><h2>Favorit Noay’s <span id="shp2"></span></h2></div><a class="underlink" href="category.html?type=Semua">Lihat semua ↗</a></div>
+  <div class="product-grid" id="featured"></div>
+</section>
+
+<section class="promo" id="promoBand">
+  <div id="promoBunny"></div>
+  <div><p class="eyebrow">A little treat for you</p><h2>Belanja happy,<br>tampil percaya diri.</h2><p>Pilih outfit favoritmu dan buat hari biasa terasa lebih ceria. Promo harian berakhir tengah malam.</p></div>
+  <a class="btn yellow" href="category.html?type=Promo">Jelajahi promo ↗</a>
+</section>
+
+<section class="section" style="padding-top:0">
+  <div class="section-title"><div><p class="eyebrow">Mix & match</p><h2>Padu-padan pilihan Noay’s <span id="shp3"></span></h2></div><p>Dua set outfit siap pakai. Pilih warna dan ukuran di halaman produk.</p></div>
+  <div class="lookbook" id="lookbook"></div>
+</section>
+
+<section class="section products-section">
+  <div class="section-title"><div><p class="eyebrow">Fresh this week</p><h2>Baru datang <span id="shp4"></span></h2></div><a class="underlink" href="category.html?type=Baru">Lihat semua yang baru ↗</a></div>
+  <div class="product-grid" id="newest"></div>
+</section>
+
+<section class="section" style="padding-bottom:0">
+  <div class="benefits-row" id="benefits"></div>
+</section>
+</main>
+<div id="site-footer"></div>
+<script src="js/config.js"></script>
+<script src="js/firebase-config.js"></script>
+<script src="js/products.js"></script>
+<script src="js/art.js"></script>
+<script src="js/sort.js"></script>
+<script src="js/db.js"></script>
+<script src="js/common.js"></script>
+<script>
+document.getElementById("heroWordmark").innerHTML = wordmark();
+document.getElementById("ico1").innerHTML = ICON.arrow;
+document.getElementById("heroRound").innerHTML = bunny();
+document.getElementById("promoBunny").innerHTML = bunny();
+document.getElementById("shp1").innerHTML = SHAPE.asterisk;
+document.getElementById("shp2").innerHTML = SHAPE.star;
+document.getElementById("shp3").innerHTML = SHAPE.heart;
+document.getElementById("shp4").innerHTML = SHAPE.sparkle;
+
+READY.then(() => {
+// hero art
+const pick = id => findProduct(id) || SEED_PRODUCTS.find(p => String(p.id) === String(id));
+const a = pick(5), b = pick(7);
+document.getElementById("heroArt").innerHTML = `
+  <div class="hero-sun"></div>${bunny("hero-mascot")}
+  <div class="hero-tag tag-a">${garment(a.art, a.colors[0].hex, a.name)}<small>THE EVERYDAY EDIT</small><b>Easy<br>going.</b></div>
+  <div class="hero-tag tag-b">${garment(b.art, b.colors[0].hex, b.name)}<small>COLOR YOUR DAY</small><b>Feel-good<br>fits.</b></div>
+  <span class="float-shape" style="left:8%;top:6%;font-size:34px">${SHAPE.sparkle}</span>
+  <span class="float-shape y" style="right:12%;bottom:12%;font-size:40px">${SHAPE.flower}</span>
+  <span class="float-shape" style="right:2%;top:50%;font-size:26px">${SHAPE.heart}</span>
+  <span class="float-shape y" style="left:3%;top:46%;font-size:28px">${SHAPE.asterisk}</span>`;
+
+// kategori
+const cats = [
+  ["Hijab", "Hijab & Kerudung", "Pashmina, voal, inner", "c-hijab", "asterisk"],
+  ["Wanita", "Baju Wanita", "Blouse, dress, celana, rok", "c-women", "flower"],
+  ["Pria", "Baju Pria", "Kemeja, kaos, jaket", "c-men", "sparkle"],
+  ["Aksesori", "Aksesori", "Tas dan pelengkap gaya", "c-acc", "heart"]
+];
+document.getElementById("catGrid").innerHTML = cats.map(([t, n, d, c, s]) =>
+  `<a class="category-tile ${c}" href="category.html?type=${t}">${SHAPE[s]}<b>${n}</b><small>${d} · ${PRODUCTS.filter(p => p.category === t).length} produk ↗</small></a>`).join("");
+
+// produk
+document.getElementById("featured").innerHTML = [...PRODUCTS].sort((x, y) => y.sales - x.sales || String(x.id).localeCompare(String(y.id))).slice(0, 8).map(productCard).join("");
+document.getElementById("newest").innerHTML = [...PRODUCTS].sort((x, y) => y.created - x.created).slice(0, 4).map(productCard).join("");
+
+// lookbook
+const sets = [["1", "5", "Sunny Sunday"], ["13", "15", "Weekend Boys"]];
+document.getElementById("lookbook").innerHTML = sets.map(([i, j, name]) => {
+  const x = findProduct(i), y = findProduct(j);
+  if (!x || !y) return "";
+  const it = p => `<a class="look-item ${p.imageUrl ? "has-photo" : ""}" style="--tint:${TINTS[p.tint]}" href="product.html?id=${encodeURIComponent(p.id)}">${productArt(p)}<b>${esc(p.name)}</b><small>${money(p.price)}</small></a>`;
+  return `<div class="look">${it(x)}${it(y)}<div class="look-foot"><div><h3>${name}</h3><span>Total set ${money(x.price + y.price)}</span></div><a class="underlink" href="product.html?id=${encodeURIComponent(x.id)}">Mulai dari ${esc(x.name)} ↗</a></div></div>`;
+}).join("");
+
+// benefit
+document.getElementById("benefits").innerHTML = [
+  ["flower", "Nyaman harian", "Bahan adem & ringan"],
+  ["sparkle", "Warna pilihan", "Mudah dipadu-padan"],
+  ["heart", "Gratis ongkir", "Min. belanja " + money(STORE.freeShippingMin)],
+  ["star", "Pesan via WhatsApp", "Cepat & ramah"]
+].map(([s, t, d]) => `<div class="benefit">${SHAPE[s]}<div><b>${t}</b><small>${d}</small></div></div>`).join("");
+});
+</script>
+</body></html>

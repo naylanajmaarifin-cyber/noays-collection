@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Koleksi — Noay’s Collection</title>
+<meta name="theme-color" content="#F1D302">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,500..900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+<div id="site-header"></div>
+
+<main class="section">
+  <p class="crumb"><a href="index.html">Beranda</a> › <span id="crumbType">Koleksi</span></p>
+  <div class="category-banner" id="banner">
+    <div><p class="eyebrow">Find your feel-good fit</p><h1 id="categoryTitle">Koleksi Noay’s</h1><p id="categoryDesc"></p>
+      <div class="promo-timer" id="promoTimer" hidden><span>Promo hari ini berakhir dalam</span><div class="countdown" id="countdown"></div></div></div>
+    <span class="deco" id="bannerDeco"></span><span id="bannerBunny"></span>
+  </div>
+
+  <div class="controls">
+    <div class="filters">
+      <label class="field">Warna<select id="colorFilter"><option value="">Semua warna</option><option>Kuning</option><option>Biru</option><option>Hitam</option><option>Netral</option><option>Pink</option></select></label>
+      <label class="field">Ukuran<select id="sizeFilter"><option value="">Semua ukuran</option><option>S</option><option>M</option><option>L</option><option>XL</option><option>All Size</option></select></label>
+      <label class="field">Harga<select id="priceFilter"><option value="">Semua harga</option><option value="0-50000">Di bawah Rp50.000</option><option value="50000-100000">Rp50.000 – Rp100.000</option><option value="100000-200000">Rp100.000 – Rp200.000</option><option value="200000-99999999">Di atas Rp200.000</option></select></label>
+    </div>
+  </div>
+  <div class="sort-panel" aria-label="Pengurutan produk">
+    <div class="sort-title"><span class="sort-ico" aria-hidden="true">⇅</span><div><b>Sorting produk</b><small>Pilih metode algoritma dan kriteria pengurutan</small></div></div>
+    <label class="field">Metode sorting<select id="sortAlgorithm"></select></label>
+    <label class="field">Urutkan berdasarkan<select id="sortBy"></select></label>
+    <p class="sort-info" id="algoStats" role="status" aria-live="polite"></p>
+  </div>
+
+  <p class="result-count" id="resultCount"></p>
+  <div class="product-grid" id="productGrid"></div>
+  <div class="empty" id="empty" hidden><div id="emptyBunny"></div><h3 id="emptyTitle">Produk tidak ditemukan</h3><p id="emptyMsg">Coba ubah filter kamu, ya!</p><a class="btn blue" href="category.html?type=Semua">Lihat semua koleksi</a></div>
+</main>
+<div id="site-footer"></div>
+<script src="js/config.js"></script>
+<script src="js/firebase-config.js"></script>
+<script src="js/products.js"></script>
+<script src="js/art.js"></script>
+<script src="js/sort.js"></script>
+<script src="js/db.js"></script>
+<script src="js/common.js"></script>
+<script src="js/category.js"></script>
+</body></html>
